@@ -148,18 +148,25 @@
         }
 
         function getVideoId(url) {
-            let videoId = null;
-            const matches = url.match(/[?&]v=([^&]+)/);
-            if (matches && matches.length > 1) {
-                videoId = matches[1];
-            } else {
-                const shortLinkMatches = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/)([^&]+)/);
-                if (shortLinkMatches && shortLinkMatches.length > 1) {
-                    videoId = shortLinkMatches[1];
-                }
+    let videoId = null;
+    const matches = url.match(/[?&]v=([^&]+)/);
+    if (matches && matches.length > 1) {
+        videoId = matches[1];
+    } else {
+        const shortLinkMatches = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/)([^&?]+)/);
+        if (shortLinkMatches && shortLinkMatches.length > 1) {
+            videoId = shortLinkMatches[1];
+        } else {
+            // For longer video IDs in the regular YouTube watch URL format
+            const longLinkMatches = url.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^/]+\/){1,2}([^/?]+)/);
+            if (longLinkMatches && longLinkMatches.length > 1) {
+                videoId = longLinkMatches[1];
             }
-            return videoId;
         }
+    }
+    return videoId;
+}
+
     </script>
 </body>
 
