@@ -31,6 +31,7 @@ en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_
 firebase-admin==6.4.0
 Flask==3.0.2
 flatbuffers==24.3.7
+fpdf==1.7.2
 frozenlist==1.4.1
 gast==0.5.4
 google-ai-generativelanguage==0.4.0
