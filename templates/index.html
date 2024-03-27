@@ -104,6 +104,38 @@
             font-size: 14px;
             color: #777;
         }
+
+        button.download-pdf {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        button.download-pdf:hover,
+        button.download-pdf:focus {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button.download-pdf:active {
+            background-color: #3e8e41;
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 16px;
+        }
     </style>
 </head>
 
@@ -111,14 +143,17 @@
     <div class="container">
         <div class="header">
             <h1>AI Video Summarizer</h1>
+            <p>Powered by cutting-edge AI, this tool quickly summarizes the content of any YouTube video into concise
+                text. Simply paste the URL below and experience the magic of AI-driven summarization!</p>
         </div>
         <div class="input-section">
-            <input type="text" id="videoUrl" placeholder="Enter YouTube Video URL">
-            <button onclick="summarizeVideo()">Summarize</button>
+            <input type="text" id="videoUrl" placeholder="Enter YouTube Video URL" aria-label="YouTube Video URL">
+            <button onclick="summarizeVideo()" class="action-button">Summarize</button>
         </div>
         <div class="output-section" id="outputSection">
             <h2>Summarized Text:</h2>
-            <div class="summary-text" id="summaryText"></div>
+            <div class="summary-text" id="summaryText">Your AI-summarized text will appear here.</div>
+            <button onclick="downloadPdf()" class="download-pdf">Download as PDF</button>
         </div>
     </div>
 
@@ -148,23 +183,46 @@
         }
 
         function getVideoId(url) {
-    let videoId = null;
-    const matches = url.match(/[?&]v=([^&]+)/);
-    if (matches && matches.length > 1) {
-        videoId = matches[1];
-    } else {
-        const shortLinkMatches = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/)([^&?]+)/);
-        if (shortLinkMatches && shortLinkMatches.length > 1) {
-            videoId = shortLinkMatches[1];
-        } else {
-            const longLinkMatches = url.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^/]+\/){1,2}([^/?]+)/);
-            if (longLinkMatches && longLinkMatches.length > 1) {
-                videoId = longLinkMatches[1];
+            let videoId = null;
+            const matches = url.match(/[?&]v=([^&]+)/);
+            if (matches && matches.length > 1) {
+                videoId = matches[1];
+            } else {
+                const shortLinkMatches = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/)([^&?]+)/);
+                if (shortLinkMatches && shortLinkMatches.length > 1) {
+                    videoId = shortLinkMatches[1];
+                } else {
+                    const longLinkMatches = url.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:[^/]+\/){1,2}([^/?]+)/);
+                    if (longLinkMatches && longLinkMatches.length > 1) {
+                        videoId = longLinkMatches[1];
+                    }
+                }
             }
+            return videoId;
         }
-    }
-    return videoId;
-}
+
+        function downloadPdf() {
+            const text = document.getElementById('summaryText').innerText;
+            fetch('/download-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text })
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'transcript.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error:', error));
+        }
 
     </script>
 </body>
