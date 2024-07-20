@@ -1,0 +1,6 @@
+Flask
+requests
+youtube-transcript-api
+fpdf
+markdown2
+gunicorn
