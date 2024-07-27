@@ -14,7 +14,6 @@ app = Flask(__name__, static_url_path='/static')
 logging.basicConfig(level=logging.DEBUG)
 
 API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyBc9a2I57vkHjVYhJ42QkzMxZvwq0BY44k"
-DEFAULT_TEXT = "Please generate a summary for the following content: "
 
 @app.route('/')
 def index():
@@ -24,9 +23,10 @@ def index():
 def summarize():
     data = request.json
     video_id = data['videoId']
+    prompt_text = data['promptText']
     try:
         transcript = get_transcript(video_id)
-        gemini_response = generate_story(DEFAULT_TEXT + transcript)
+        gemini_response = generate_story(prompt_text + transcript)
         logging.debug(f"API response: {gemini_response}")
         if gemini_response and 'candidates' in gemini_response:
             story_content = extract_story_content(gemini_response)
