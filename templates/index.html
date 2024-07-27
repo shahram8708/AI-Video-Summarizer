@@ -44,15 +44,17 @@
 
         .input-section {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 30px;
         }
 
         .input-section input[type="text"] {
-            flex: 1;
+            width: calc(100% - 40px);
+            margin-bottom: 10px;
             padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 5px 0 0 5px;
+            border-radius: 5px;
             font-size: 16px;
             outline: none;
         }
@@ -64,7 +66,7 @@
             background-color: #007bff;
             color: #fff;
             border: none;
-            border-radius: 0 5px 5px 0;
+            border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
             outline: none;
@@ -195,11 +197,14 @@
         <div class="header">
             <h1>Transcribe Genius 🧠</h1>
             <p>Powered by cutting-edge AI, this tool quickly summarizes the content of any YouTube video into concise
-                text. Simply paste the URL below and experience the magic of AI-driven summarization!</p>
+                text. Simply paste the URL below, provide a custom prompt, and experience the magic of AI-driven
+                summarization!</p>
         </div>
         <div class="input-section">
             <input type="text" id="videoUrl" placeholder="Enter YouTube Video URL" aria-label="YouTube Video URL">
-            <button onclick="summarizeVideo()" class="action-button">✅</button>
+            <input type="text" id="promptText" placeholder="What's your question about this video?"
+                aria-label="Custom Prompt Text">
+            <button onclick="summarizeVideo()">✅</button>
         </div>
         <div class="loading-wave" id="loadingWave">
             <div class="wave"></div>
@@ -222,6 +227,7 @@
     <script>
         function summarizeVideo() {
             const videoUrl = document.getElementById('videoUrl').value;
+            const promptText = document.getElementById('promptText').value;
             const videoId = getVideoId(videoUrl);
 
             if (!videoId) {
@@ -237,7 +243,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ videoId })
+                body: JSON.stringify({ videoId, promptText })
             })
                 .then(response => response.json())
                 .then(data => {
@@ -320,12 +326,6 @@
             speech.onend = function () {
                 playButton.textContent = '▶️';
             }
-        }
-
-        function stopAudio() {
-            window.speechSynthesis.cancel();
-            const playButton = document.querySelector('.audio-button');
-            playButton.textContent = '▶️';
         }
     </script>
 </body>
