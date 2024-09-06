@@ -13,7 +13,7 @@ app = Flask(__name__, static_url_path='/static')
 
 logging.basicConfig(level=logging.DEBUG)
 
-API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyBc9a2I57vkHjVYhJ42QkzMxZvwq0BY44k"
+API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAJ35vaOFwY74s_n55KZiWs7slEjqSa2L8"
 
 @app.route('/')
 def index():
